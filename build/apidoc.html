@@ -1,0 +1,150 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/slushjs/gulp-install"
+
+    >gulp-install (v1.1.0)</a>
+</h1>
+<h4>Automatically install npm, bower, tsd, and pip packages/dependencies if the relative configurations are found in the gulp file stream respectively</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.gulp-install">module gulp-install</a><ol>
+
+        <li>
+
+            <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">gulp-install.</span>command_runner</span>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.gulp-install.command_runner">module gulp-install.command_runner</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-install.command_runner.run">
+            function <span class="apidocSignatureSpan">gulp-install.command_runner.</span>run
+            <span class="apidocSignatureSpan">(command)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.gulp-install" id="apidoc.module.gulp-install">module gulp-install</a></h1>
+
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.gulp-install.command_runner" id="apidoc.module.gulp-install.command_runner">module gulp-install.command_runner</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-install.command_runner.run" id="apidoc.element.gulp-install.command_runner.run">
+        function <span class="apidocSignatureSpan">gulp-install.command_runner.</span>run
+        <span class="apidocSignatureSpan">(command)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">run = function (command) {
+  return new Promise((resolve, reject) =&#x3e; {
+    which(command.cmd, (err, cmdpath) =&#x3e; {
+      if (err) {
+        return reject(new Error(`Can&#x27;t install! &#x22;${command.cmd}&#x22; doesn&#x27;t seem to be installed.`));
+      }
+      const cmd = spawn(quoteIfNecessary(cmdpath), command.args, {shell: true, stdio: &#x27;inherit&#x27;, cwd: command.cwd || process.cwd
+()});
+      cmd.on(&#x27;close&#x27;, code =&#x3e; {
+        if (code !== 0) {
+          return reject(new Error(`&#x22;${command.cmd}&#x22; exited with non-zero code ${code}`));
+        }
+        resolve();
+      });
+    });
+  });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+        log(&#x27;Skipping install.&#x27;, &#x27;Run `&#x27; + gutil.colors.yellow(formatCommands(toRun)) + &#x27;` manually&#x27
+;);
+        return cb();
+      }
+      const groupedCommands = groupBy(toRun, &#x27;cmd&#x27;);
+      Promise.all(Object.keys(groupedCommands).map(cmd =&#x3e; {
+        const commands = groupedCommands[cmd];
+        const queue = new PQueue({concurrency: 1});
+        return Promise.all(commands.map(command =&#x3e; queue.add(() =&#x3e; logFailure(command)(commandRunner.<span class="apidocCodeKeywordSpan
+">run</span>(command)))));
+      }))
+      .then(() =&#x3e; done())
+      .then(() =&#x3e; cb(), cb); // eslint-disable-line promise/no-callback-in-promise
+    }
+  );
+};
+...</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>

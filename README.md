@@ -1,9 +1,14 @@
-# api documentation for  [gulp-install (v1.1.0)](https://github.com/slushjs/gulp-install)  [![npm package](https://img.shields.io/npm/v/npmdoc-gulp-install.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-gulp-install) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-gulp-install.svg)](https://travis-ci.org/npmdoc/node-npmdoc-gulp-install)
+# npmdoc-gulp-install
+
+#### api documentation for  [gulp-install (v1.1.0)](https://github.com/slushjs/gulp-install)  [![npm package](https://img.shields.io/npm/v/npmdoc-gulp-install.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-gulp-install) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-gulp-install.svg)](https://travis-ci.org/npmdoc/node-npmdoc-gulp-install)
+
 #### Automatically install npm, bower, tsd, and pip packages/dependencies if the relative configurations are found in the gulp file stream respectively
 
-[![NPM](https://nodei.co/npm/gulp-install.png?downloads=true)](https://www.npmjs.com/package/gulp-install)
+[![NPM](https://nodei.co/npm/gulp-install.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/gulp-install)
 
-[![apidoc](https://npmdoc.github.io/node-npmdoc-gulp-install/build/screenCapture.buildNpmdoc.browser._2Fhome_2Ftravis_2Fbuild_2Fnpmdoc_2Fnode-npmdoc-gulp-install_2Ftmp_2Fbuild_2Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-gulp-install/build/apidoc.html)
+- [https://npmdoc.github.io/node-npmdoc-gulp-install/build/apidoc.html](https://npmdoc.github.io/node-npmdoc-gulp-install/build/apidoc.html)
+
+[![apidoc](https://npmdoc.github.io/node-npmdoc-gulp-install/build/screenCapture.buildCi.browser.%252Ftmp%252Fbuild%252Fapidoc.html.png)](https://npmdoc.github.io/node-npmdoc-gulp-install/build/apidoc.html)
 
 ![npmPackageListing](https://npmdoc.github.io/node-npmdoc-gulp-install/build/screenCapture.npmPackageListing.svg)
 
@@ -17,8 +22,7 @@
 
 {
     "author": {
-        "name": "Joakim Carlstein",
-        "email": "joakim@klei.se"
+        "name": "Joakim Carlstein"
     },
     "bugs": {
         "url": "https://github.com/slushjs/gulp-install/issues"
@@ -55,13 +59,11 @@
     "main": "index.js",
     "maintainers": [
         {
-            "name": "joakimbeng",
-            "email": "joakim@klei.se"
+            "name": "joakimbeng"
         }
     ],
     "name": "gulp-install",
     "optionalDependencies": {},
-    "readme": "ERROR: No README data found!",
     "repository": {
         "type": "git",
         "url": "git://github.com/slushjs/gulp-install.git"
@@ -74,65 +76,6 @@
         "space": true
     }
 }
-```
-
-
-
-# <a name="apidoc.tableOfContents"></a>[table of contents](#apidoc.tableOfContents)
-
-#### [module gulp-install](#apidoc.module.gulp-install)
-1.  object <span class="apidocSignatureSpan">gulp-install.</span>command_runner
-
-#### [module gulp-install.command_runner](#apidoc.module.gulp-install.command_runner)
-1.  [function <span class="apidocSignatureSpan">gulp-install.command_runner.</span>run (command)](#apidoc.element.gulp-install.command_runner.run)
-
-
-
-# <a name="apidoc.module.gulp-install"></a>[module gulp-install](#apidoc.module.gulp-install)
-
-
-
-# <a name="apidoc.module.gulp-install.command_runner"></a>[module gulp-install.command_runner](#apidoc.module.gulp-install.command_runner)
-
-#### <a name="apidoc.element.gulp-install.command_runner.run"></a>[function <span class="apidocSignatureSpan">gulp-install.command_runner.</span>run (command)](#apidoc.element.gulp-install.command_runner.run)
-- description and source-code
-```javascript
-run = function (command) {
-  return new Promise((resolve, reject) => {
-    which(command.cmd, (err, cmdpath) => {
-      if (err) {
-        return reject(new Error('Can't install! "${command.cmd}" doesn't seem to be installed.'));
-      }
-      const cmd = spawn(quoteIfNecessary(cmdpath), command.args, {shell: true, stdio: 'inherit', cwd: command.cwd || process.cwd
-()});
-      cmd.on('close', code => {
-        if (code !== 0) {
-          return reject(new Error('"${command.cmd}" exited with non-zero code ${code}'));
-        }
-        resolve();
-      });
-    });
-  });
-}
-```
-- example usage
-```shell
-...
-        log('Skipping install.', 'Run '' + gutil.colors.yellow(formatCommands(toRun)) + '' manually');
-        return cb();
-      }
-      const groupedCommands = groupBy(toRun, 'cmd');
-      Promise.all(Object.keys(groupedCommands).map(cmd => {
-        const commands = groupedCommands[cmd];
-        const queue = new PQueue({concurrency: 1});
-        return Promise.all(commands.map(command => queue.add(() => logFailure(command)(commandRunner.run(command)))));
-      }))
-      .then(() => done())
-      .then(() => cb(), cb); // eslint-disable-line promise/no-callback-in-promise
-    }
-  );
-};
-...
 ```
 
 

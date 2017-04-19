@@ -56,6 +56,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-install.gulp-install">
+            function <span class="apidocSignatureSpan"></span>gulp-install
+            <span class="apidocSignatureSpan">(opts = {}, done = noop)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <span class="apidocSignatureSpan">object <span class="apidocSignatureSpan">gulp-install.</span>command_runner</span>
 
         </li>
@@ -79,6 +88,90 @@
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.gulp-install" id="apidoc.module.gulp-install">module gulp-install</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-install.gulp-install" id="apidoc.element.gulp-install.gulp-install">
+        function <span class="apidocSignatureSpan"></span>gulp-install
+        <span class="apidocSignatureSpan">(opts = {}, done = noop)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">gulp-install = function (opts = {}, done = noop) {
+  if (typeof opts === 'function') {
+    done = opts;
+    opts = {};
+  }
+  const fileToCommand = Object.assign(
+    {},
+    defaultFileToCommand,
+    opts.commands
+  );
+  const toRun = [];
+
+  return through2(
+    {objectMode: true},
+    function (file, enc, cb) {
+      if (!file.path) {
+        return cb();
+      }
+      if (fileToCommand[path.basename(file.path)]) {
+        const cmd = {
+          cmd: fileToCommand[path.basename(file.path)],
+          args: (commands[fileToCommand[path.basename(file.path)]] || []).slice()
+        };
+
+        if (['bower', 'npm'].includes(cmd.cmd) &amp;&amp; opts.production) {
+          cmd.args.push('--production');
+        }
+        if (cmd.cmd === 'npm' &amp;&amp; opts.ignoreScripts) {
+          cmd.args.push('--ignore-scripts');
+        }
+        if (opts.args) {
+          cmd.args = cmd.args.concat(opts.args).map(arg =&gt; arg.toString());
+        }
+        if (Array.isArray(opts[cmd.cmd])) {
+          cmd.args = cmd.args.concat(opts[cmd.cmd].map(arg =&gt; arg.toString()));
+        } else if (typeof opts[cmd.cmd] === 'object') {
+          cmd.args = cmd.args.concat(dargs(opts[cmd.cmd]));
+        } else if (opts[cmd.cmd]) {
+          cmd.args = cmd.args.concat(opts[cmd.cmd].toString());
+        }
+        if (cmd.cmd === 'bower' &amp;&amp; opts.allowRoot) {
+          cmd.args.push('--allow-root');
+        }
+        if (cmd.cmd === 'npm' &amp;&amp; opts.noOptional) {
+          cmd.args.push('--no-optional');
+        }
+
+        cmd.cwd = path.dirname(file.path);
+        toRun.push(cmd);
+      }
+      this.push(file);
+      cb();
+    },
+    cb =&gt; {
+      if (toRun.length === 0) {
+        return cb();
+      }
+      if (skipInstall()) {
+        log('Skipping install.', 'Run `' + gutil.colors.yellow(formatCommands(toRun)) + '` manually');
+        return cb();
+      }
+      const groupedCommands = groupBy(toRun, 'cmd');
+      Promise.all(Object.keys(groupedCommands).map(cmd =&gt; {
+        const commands = groupedCommands[cmd];
+        const queue = new PQueue({concurrency: 1});
+        return Promise.all(commands.map(command =&gt; queue.add(() =&gt; logFailure(command)(commandRunner.run(command)))));
+      }))
+      .then(() =&gt; done())
+      .then(() =&gt; cb(), cb); // eslint-disable-line promise/no-callback-in-promise
+    }
+  );
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
 
